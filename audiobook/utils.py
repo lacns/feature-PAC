@@ -7,11 +7,21 @@ Created on Fri Oct 23 13:19:47 2020
 """
 import os
 from typing import List, Union, Tuple
-import h5py
+try:
+    import h5py
+    h5py_available = True
+except ImportError:
+    print("h5py not installed, some functions will not work.")
+    h5py_available = False
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import textgrid as tg
+try:
+    tg_available = True
+    import textgrid as tg
+except ImportError:
+    tg_available = False
+    print("textgrid not installed, some functions will not work.")
 from tqdm import tqdm
 
 from scipy.signal import correlate
@@ -21,24 +31,24 @@ from scipy.stats import zscore
 from pyeeg.utils import signal_envelope, lag_matrix, lag_span
 import mne
 
-DATA_PATH = '/project/3027007.01/'
-STIM_PATH = '/project/3027007.01/Stimuli/'
-CH_TYPES = {
-    # EOG
-    'EEG057':'eog', 
-    'EEG058':'eog',
-    # EKG
-    'EEG059':'ecg',
-    # STIM - audio
-    'UADC001':'misc',
-    'UADC002':'misc',
-    # Triggers
-    'UPPT001':'stim',
-    'UPPT002':'resp', # response
-    }
-STORIES = pd.read_csv(os.path.join(STIM_PATH, 'story_ids.csv'), delim_whitespace=True, names=['id', 'filename', 'lang'])
-
-subjects = [d for d in os.listdir(DATA_PATH) if (os.path.isdir(os.path.join(DATA_PATH, d)) and d.startswith('sub'))]
+from audiobook.config import DATA_PATH, STIM_PATH, CH_TYPES, STORIES, subjects
+# DATA_PATH = '/project/3027007.01/'
+# STIM_PATH = '/project/3027007.01/Stimuli/'
+# CH_TYPES = {
+#     # EOG
+#     'EEG057':'eog', 
+#     'EEG058':'eog',
+#     # EKG
+#     'EEG059':'ecg',
+#     # STIM - audio
+#     'UADC001':'misc',
+#     'UADC002':'misc',
+#     # Triggers
+#     'UPPT001':'stim',
+#     'UPPT002':'resp', # response
+#     }
+# STORIES = pd.read_csv(os.path.join(STIM_PATH, 'story_ids.csv'), delim_whitespace=True, names=['id', 'filename', 'lang'])
+# subjects = [d for d in os.listdir(DATA_PATH) if (os.path.isdir(os.path.join(DATA_PATH, d)) and d.startswith('sub'))]
 
 data_folders = {}
 for subj in subjects:
@@ -117,7 +127,7 @@ def get_audiopath(story):
     fname = 'story%s_part%s_normalized.wav'%(sid[0], sid[1])
     return os.path.join(STIM_PATH, 'materials', fname)
 
-def get_acoustic_envelope(story, srate=120):
+def get_acoustic_envelope(story, map_names=True, srate=120):
     """
     Get the acoustic envelope from a given story. This loads the wav-file and 
     compute the envelope from the raw audio. The envelope is computed using 
@@ -139,11 +149,12 @@ def get_acoustic_envelope(story, srate=120):
         Acoustic envelope.
 
     """
-    fs, y = wavread(get_audiopath(story))
+    fs, y = wavread(get_audiopath(story) if map_names else story)
     y = signal_envelope(y, fs, resample=srate, verbose=0)
     return  y
 
 def get_boundaries(story, onset=True, phonemes=False):
+    assert tg_available, "textgrid not installed, please install it to use this function."
     tgdata = tg.TextGrid.fromFile(os.path.join(STIM_PATH, 'Alignments', story + '.TextGrid'))
     intervals = tgdata.getFirst('MAU' if phonemes else 'ORT-MAU')
     wordlist = []
@@ -393,6 +404,7 @@ def write_hdf_raws(meg_data, fpath='/project/3027007.01/analysis/Hugo/Data/raws.
     overwrite: bool
         If True, will overwrite the file if it already exists.
     """
+    assert h5py_available, "h5py not installed, please install it to use this function."
     with h5py.File(fpath, mode='a') as f:
         if str(srate) not in f.keys():
             gp = f.create_group(str(srate))
@@ -427,6 +439,8 @@ def write_hdf_raws(meg_data, fpath='/project/3027007.01/analysis/Hugo/Data/raws.
                     
 def read_hdf_raws(subject, story, srate=50, fband='delta',
                   fpath='/project/3027007.01/analysis/Hugo/Data/raws.h5'):
+    
+    assert h5py_available, "h5py not installed, please install it to use this function."
     with h5py.File(fpath, mode='r') as f:
         return f[str(srate)][fband][subject][story][()]
     

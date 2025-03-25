@@ -1,10 +1,11 @@
 # Feature-informed Phase-amplitude coupling estimation
 
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
-[![DOI:10.1101/2023.10.06.561087](http://img.shields.io/badge/DOI-10.1101/2023.10.06.561087-B31B1B.svg)](https://doi.org/10.1101/2023.10.06.561087)
+[![DOI](https://zenodo.org/badge/708032317.svg)](https://zenodo.org/doi/10.5281/zenodo.12667683)
 
-This repository contains the necessary code and a minimal working example of preprocessed data to reproduce the results of "The Structure and Statistics of Language jointly shape Cross-frequency Dynamics during Spoken Language Comprehension", H. Weissbart & AE. Martin, 2023 ([bioRiv](https://www.biorxiv.org/content/10.1101/2023.10.06.561087v1.full)).
-
+This repository contains the necessary code and a minimal working example of preprocessed data to reproduce the results of:
+> " The structure and statistics of language jointly shape cross-frequency neural dynamics during spoken language comprehension", H. Weissbart & AE. Martin, 2024 ([Nature Communications]([https://www.biorxiv.org/content/10.1101/2023.10.06.561087v1.full](https://www.nature.com/articles/s41467-024-53128-1))).
+> [![DOI](https://img.shields.io/badge/DOI-10.1038/s41467--024--53128--1-blue.svg)](https://doi.org/10.1038/s41467-024-53128-1)
 
 ## Content
 
@@ -14,7 +15,7 @@ This repository contains the necessary code and a minimal working example of pre
 - [Setting up](#installation-and-usage)
 - [Dependencies](#requirements)
 - [Data](#dataset)
-- [Reference](#citation-📚)
+- [Reference](#citation-)
 
 Folders content:
 - `data`
@@ -79,8 +80,6 @@ sys.path.append('path/to/feature-PAC/audiobook')
 
 Example code to reproduce the results of the paper is provided in the `notebooks` folder. You can run the notebooks directly from the command line or from a Jupyter notebook server (e.g., Jupyter Lab `jupyter lab ./` from the root directory, then navigate to the `notebook` folder within Jupyter).
 
-Additionally, a Code Ocean capsule is available to run the **simulation code** (for now) presented in the main article directly from a cloud-based environment. You can access the capsule [here](https://doi.org/10.24433/CO.9714821.v1).
-
 ## Additional information
 
 ### Requirements
@@ -96,7 +95,9 @@ The code was tested with Python 3.12.2 and 3.9.13 on CentoOS 7 (kernel Linux-5.4
 - joblib            1.4.0
 - seaborn           0.13.2
 - statsmodels       0.14.1
-
+- h5py              >=3.6.0
+- h5io              >=0.1.0
+- fooof             >=1.0.0
 
 ### Dataset
 
@@ -113,6 +114,11 @@ The raw files of the full dataset used in this study are published and available
 
 ## Citation 📚
 
-> The Structure and Statistics of Language jointly shape Cross-frequency Dynamics during Spoken Language Comprehension;
+Paper:
+
+> The Structure and Statistics of Language jointly shape Cross-frequency Neural Dynamics during Spoken Language Comprehension;
 > Hugo Weissbart, Andrea E. Martin;
-> bioRxiv 2023.10.06.561087; doi: [https://doi.org/10.1101/2023.10.06.561087 ](https://doi.org/10.1101/2023.10.06.561087)
+> Nature Comms. (2024); [![DOI](https://img.shields.io/badge/DOI-10.1038/s41467--024--53128--1-blue.svg)](https://doi.org/10.1038/s41467-024-53128-1)
+
+Code:
+> Weissbart, H. (2024). Code and example for TRF-PAC (v0.1.0). Zenodo. [![DOI](https://zenodo.org/badge/708032317.svg)](https://zenodo.org/doi/10.5281/zenodo.12667683)
